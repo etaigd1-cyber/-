@@ -1,0 +1,13 @@
+---
+name: QR Power Cards — Dynamic Sheet Integration
+description: QR scanner fetches card definitions from 'קלפים' Google Sheet (GID 984041122) and matches scanned barcodes dynamically
+type: feature
+---
+- Cards are fetched from the 'קלפים' sheet via fetchCardData() in fetchGameData.ts
+- GameCard type: { action, url, description, cardKey }
+- Scanned codes are matched against sheet data first, then fall back to hardcoded aliases
+- handleCardEffect() executes game state changes and returns satirical breaking news headlines
+- PowerActivatedOverlay accepts dynamic cardType (string) + optional cardLabel
+- Sheet GIDs: trivia=962320107, cards=984041122, missions=600327577, debates=410013963
+- Placeholder fetchMissionData() ready for future 'משימות' sheet implementation
+- Both QrScannerModal and ScanCard page support unknown card keys from the sheet
