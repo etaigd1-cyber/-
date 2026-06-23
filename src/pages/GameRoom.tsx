@@ -28,7 +28,9 @@ const GameRoom = () => {
 
   useEffect(() => {
     if (challenges.length === 0) {
-      fetchGameData().then(setChallenges);
+      fetchGameData()
+        .then(setChallenges)
+        .catch((err) => console.error('[GameRoom] fetchGameData failed:', err));
     }
   }, [challenges.length, setChallenges]);
 
