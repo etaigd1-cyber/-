@@ -1,0 +1,1 @@
+ALTER TABLE public.rooms ADD COLUMN timer_end_at timestamptz DEFAULT NULL;

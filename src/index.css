@@ -1,0 +1,175 @@
+@import url('https://fonts.googleapis.com/css2?family=Heebo:wght@400;500;600;700;800;900&family=Rubik:wght@400;500;600;700;800;900&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --background: 225 20% 7%;
+    --foreground: 210 15% 90%;
+
+    --card: 225 18% 11%;
+    --card-foreground: 210 15% 90%;
+
+    --popover: 225 18% 13%;
+    --popover-foreground: 210 15% 90%;
+
+    --primary: 210 40% 52%;
+    --primary-foreground: 0 0% 100%;
+
+    --secondary: 350 35% 50%;
+    --secondary-foreground: 0 0% 100%;
+
+    --muted: 225 15% 16%;
+    --muted-foreground: 220 10% 50%;
+
+    --accent: 38 55% 58%;
+    --accent-foreground: 225 20% 7%;
+
+    --destructive: 0 55% 50%;
+    --destructive-foreground: 0 0% 100%;
+
+    --border: 225 12% 18%;
+    --input: 225 12% 18%;
+    --ring: 210 40% 52%;
+
+    --radius: 0.75rem;
+
+    --coalition: 155 35% 45%;
+    --coalition-foreground: 0 0% 100%;
+
+    --party-blue: 210 45% 55%;
+    --party-red: 350 40% 55%;
+    --party-orange: 30 55% 58%;
+    --party-green: 155 35% 50%;
+    --party-purple: 270 30% 55%;
+    --party-yellow: 48 50% 60%;
+
+    --news-ticker: 350 35% 50%;
+    --breaking: 0 50% 48%;
+
+    --font-display: 'Rubik', sans-serif;
+    --font-body: 'Heebo', sans-serif;
+
+    --sidebar-background: 225 20% 7%;
+    --sidebar-foreground: 210 15% 90%;
+    --sidebar-primary: 210 40% 52%;
+    --sidebar-primary-foreground: 0 0% 100%;
+    --sidebar-accent: 225 15% 16%;
+    --sidebar-accent-foreground: 210 15% 90%;
+    --sidebar-border: 225 12% 18%;
+    --sidebar-ring: 210 40% 52%;
+
+    /* District pastel tones */
+    --district-available: 155 30% 45%;
+    --district-empty: 0 40% 50%;
+    --district-card: 225 18% 13%;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+
+  html {
+    direction: rtl;
+  }
+
+  body {
+    @apply bg-background text-foreground font-body;
+    font-family: var(--font-body);
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    font-family: var(--font-display);
+  }
+}
+
+@layer components {
+  .news-ticker {
+    @apply bg-card/95 backdrop-blur-sm py-1.5 px-4 text-sm font-bold border-b border-border;
+    animation: ticker-scroll 15s linear infinite;
+  }
+
+  .breaking-banner {
+    @apply bg-destructive text-destructive-foreground font-display font-black text-center py-2.5 px-4 uppercase tracking-wider;
+    animation: pulse-glow 2s ease-in-out infinite;
+  }
+
+  .news-chyron {
+    @apply bg-card/90 backdrop-blur-sm border border-border rounded-lg overflow-hidden;
+  }
+
+  .party-card {
+    @apply rounded-xl p-4 border-2 transition-all duration-300;
+  }
+
+  .party-card:hover {
+    transform: scale(1.02);
+  }
+
+  .glass-panel {
+    @apply bg-card/80 backdrop-blur-md border border-border rounded-xl;
+  }
+
+  .mandate-badge {
+    @apply inline-flex items-center justify-center rounded-full font-display font-bold text-sm min-w-[2rem] h-8 px-2;
+  }
+
+  .dice-face {
+    @apply w-16 h-16 rounded-xl flex items-center justify-center text-2xl font-black shadow-lg;
+  }
+
+  .timer-ring {
+    @apply relative inline-flex items-center justify-center;
+  }
+
+  .district-card {
+    @apply rounded-xl p-4 border border-border bg-card/90 transition-all duration-200 cursor-pointer;
+  }
+
+  .district-card:hover {
+    @apply border-primary/50 bg-card;
+    transform: translateY(-1px);
+  }
+}
+
+@layer utilities {
+  .font-display {
+    font-family: var(--font-display);
+  }
+
+  .font-body {
+    font-family: var(--font-body);
+  }
+
+  .text-gradient-primary {
+    @apply bg-clip-text text-transparent;
+    background-image: linear-gradient(135deg, hsl(var(--primary)), hsl(var(--accent)));
+  }
+
+  .bg-gradient-political {
+    background: linear-gradient(135deg, hsl(var(--party-blue) / 0.1), hsl(var(--party-red) / 0.1));
+  }
+}
+
+@keyframes ticker-scroll {
+  0% { transform: translateX(100%); }
+  100% { transform: translateX(-100%); }
+}
+
+.animate-ticker {
+  animation: ticker-scroll 30s linear infinite;
+}
+
+@keyframes pulse-glow {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.7; }
+}
+
+@keyframes dice-spin {
+  0% { transform: rotateX(0deg) rotateY(0deg); }
+  100% { transform: rotateX(720deg) rotateY(720deg); }
+}
