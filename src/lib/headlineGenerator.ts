@@ -87,6 +87,9 @@ const CATEGORY_NAMES: Record<ChallengeCategory, string> = {
   knowledge: 'ידע',
   mission: 'משימה',
   debate: 'דיבייט',
+  quote: 'מי אמר?',
+  map: 'זיהוי מקומות',
+  music: 'זהה את השיר',
 };
 
 const challengeSerious = (player: string, party: PartyId, category: ChallengeCategory, won: boolean): string => {

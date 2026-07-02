@@ -1,8 +1,11 @@
 import { create } from 'zustand';
 import { cleanAnswerText } from '@/lib/fetchGameData';
 import type { GameState, GamePhase, Player, ChallengeCategory, Challenge, PartyId, Interest, WowEvent, DistrictId, NewsHeadline, ChallengeDifficulty, SecretMemo as SecretMemoType, AgeGroup, DifficultyLevel } from '@/types/game';
-import { DISTRICTS, betToDifficulty, DIFFICULTY_ORDER, getInitialMandates } from '@/types/game';
+import { DISTRICTS, CATEGORIES, betToDifficulty, DIFFICULTY_ORDER, getInitialMandates } from '@/types/game';
 import { getRandomMission } from '@/lib/challengeBank';
+import { getRandomQuote } from '@/lib/quoteBank';
+import { getRandomSong } from '@/lib/musicBank';
+import { getRandomLocation } from '@/lib/locationBank';
 import { logMandateTransaction, updatePublicTreasury } from '@/lib/mandateLogger';
 import { supabase } from '@/integrations/supabase/client';
 import type { Database } from '@/integrations/supabase/types';
@@ -20,6 +23,9 @@ const initialCategoryStats = (): Record<ChallengeCategory, { won: number; lost: 
   knowledge: { won: 0, lost: 0 },
   mission: { won: 0, lost: 0 },
   debate: { won: 0, lost: 0 },
+  quote: { won: 0, lost: 0 },
+  map: { won: 0, lost: 0 },
+  music: { won: 0, lost: 0 },
 });
 
 const makeHeadline = (text: string, type: NewsHeadline['type'] = 'update'): NewsHeadline => ({
@@ -111,7 +117,7 @@ interface GameStore extends GameState {
   setTimer: (s: number) => void;
   setTimerEndAt: (ts: string | null) => void;
   castVote: (playerId: string, success: boolean) => void;
-  resolveRound: (winnerId: string) => void;
+  resolveRound: (winnerId: string, rewardOverride?: number) => void;
   nextTurn: () => void;
   setChallenges: (c: Challenge[]) => void;
   triggerWowEvent: () => void;
@@ -413,6 +419,44 @@ export const useGameStore = create<GameStore>((set, get) => ({
       return;
     }
 
+    // Quote / Map / Music: self-contained local content banks (image_questions_list.xlsx-backed)
+    if (cat === 'quote' || cat === 'map' || cat === 'music') {
+      const playerAge = player?.age ?? 18;
+      const ageGroup: AgeGroup = playerAge < 12 ? 'ילד' : playerAge < 18 ? 'נוער' : 'מבוגר';
+      let challenge: Challenge;
+
+      if (cat === 'quote') {
+        const q = getRandomQuote(playerAge);
+        challenge = {
+          id: -1, challengeType: 'quote', question: q.quote, options: q.options,
+          correctAnswer: q.answer, ageGroup, interestTag: null, category: 'מי אמר?',
+          contextHint: `${q.context} (${q.year})`,
+        };
+      } else if (cat === 'music') {
+        const song = getRandomSong();
+        challenge = {
+          id: -1, challengeType: 'music', question: 'איזה שיר מתנגן?', options: song.options,
+          correctAnswer: song.title, ageGroup, interestTag: null, category: 'זהה את השיר',
+          audioUrl: song.audioFile,
+        };
+      } else {
+        const loc = getRandomLocation(playerAge);
+        challenge = {
+          id: -1, challengeType: 'map', question: loc.name, options: [],
+          correctAnswer: loc.name, ageGroup, interestTag: null, category: 'זיהוי מקומות',
+          imageUrl: loc.imageUrl, mapTarget: { xPct: loc.xPct, yPct: loc.yPct },
+        };
+      }
+
+      const timer = CATEGORIES.find(c => c.id === cat)?.timer ?? 30;
+      set({
+        selectedCategory: cat, currentChallenge: challenge, timerSeconds: timer,
+        phase: 'battle', challengeDifficulty: difficulty,
+      });
+      void pushRoomState();
+      return;
+    }
+
     // Mission / debate: pick a challenge from the filtered pool
     const filtered = get().getFilteredChallenges(player?.age ?? 18, cat, player?.interests, get().currentBet);
     let challenge: Challenge | null = filtered.length > 0
@@ -688,7 +732,7 @@ export const useGameStore = create<GameStore>((set, get) => ({
     if (player) void pushPlayerState(player);
   },
 
-  resolveRound: (winnerId) =>
+  resolveRound: (winnerId, rewardOverride) =>
     set((s) => {
       const winner = s.players.find(p => p.id === winnerId);
       const cat = s.selectedCategory;
@@ -697,7 +741,7 @@ export const useGameStore = create<GameStore>((set, get) => ({
       const conquests = s.selectedDistrict ? (s.districtMandates[s.selectedDistrict] || []) : [];
       const taken = conquests.reduce((sum, c) => sum + c.mandates, 0);
       const available = districtObj ? Math.max(0, districtObj.maxMandates - taken) : s.currentBet;
-      const mandateReward = Math.min(s.currentBet, available);
+      const mandateReward = Math.min(rewardOverride ?? s.currentBet, available);
 
       const updatedPlayers = s.players.map((p) => {
         if (p.id === winnerId) {

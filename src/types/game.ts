@@ -42,12 +42,15 @@ export const DISTRICTS: District[] = [
   { id: 'arava',          name: 'הערבה',            emoji: '🌵', maxMandates: 5 },
 ];
 
-export type ChallengeCategory = 'knowledge' | 'mission' | 'debate';
+export type ChallengeCategory = 'knowledge' | 'mission' | 'debate' | 'quote' | 'map' | 'music';
 
 export const CATEGORIES: { id: ChallengeCategory; name: string; emoji: string; timer: number }[] = [
   { id: 'knowledge', name: 'ידע', emoji: '🧠', timer: 30 },
   { id: 'mission', name: 'משימה', emoji: '💪', timer: 60 },
   { id: 'debate', name: 'דיבייט', emoji: '🗣️', timer: 60 },
+  { id: 'quote', name: 'מי אמר?', emoji: '💬', timer: 20 },
+  { id: 'map', name: 'זיהוי מקומות', emoji: '🗺️', timer: 30 },
+  { id: 'music', name: 'זהה את השיר', emoji: '🎵', timer: 30 },
 ];
 
 export type Interest = 'politics' | 'music' | 'tv-cinema' | 'sports' | 'science' | 'history' | 'geography' | 'general';
@@ -164,6 +167,14 @@ export interface Challenge {
   ageGroup: AgeGroup;
   interestTag: Interest | null;
   category: string;
+  /** Place photo (map mode) or portrait, served from /public */
+  imageUrl?: string;
+  /** Song clip (music mode), served from /public */
+  audioUrl?: string;
+  /** Target pin position for map mode, as % of the map image dimensions */
+  mapTarget?: { xPct: number; yPct: number };
+  /** Extra context revealed as a hint (quote mode) */
+  contextHint?: string;
 }
 
 export type GamePhase = 'landing' | 'lobby' | 'district-select' | 'betting' | 'challenge-join' | 'qr-select' | 'battle' | 'voting' | 'results' | 'wow-event' | 'dashboard' | 'national-crisis' | 'victory';

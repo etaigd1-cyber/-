@@ -1,10 +1,11 @@
 import { useState, useEffect, useCallback, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { CheckCircle2, XCircle, Radio, Zap, Shield, Hand } from 'lucide-react';
+import { CheckCircle2, XCircle, Radio, Zap, Shield, Hand, Lightbulb } from 'lucide-react';
 import { useGameStore } from '@/store/gameStore';
 import { Button } from '@/components/ui/button';
 import { DISTRICTS, PARTIES } from '@/types/game';
 import CrowdReaction from '@/components/game/CrowdReaction';
+import MapPinChallenge from '@/components/game/MapPinChallenge';
 import { playTick, playBuzzer, playCorrect, playWrong } from '@/lib/audioEffects';
 import { cleanAnswerText } from '@/lib/fetchGameData';
 const BattleArena = () => {
@@ -20,12 +21,18 @@ const BattleArena = () => {
   const [revealed, setRevealed] = useState(false);
   const [timedOut, setTimedOut] = useState(false);
   const [missionCompleted, setMissionCompleted] = useState(false);
+  const [hintUsed, setHintUsed] = useState(false);
+  const [answerTimeLeft, setAnswerTimeLeft] = useState<number | null>(null);
   const lastTickRef = useRef(-1);
 
   const district = DISTRICTS.find(d => d.id === selectedDistrict);
   const shouldShake = crowdReaction.boos > crowdReaction.claps && crowdReaction.boos > 0;
   const isKnowledge = selectedCategory === 'knowledge';
   const isMission = selectedCategory === 'mission';
+  const isQuote = selectedCategory === 'quote';
+  const isMusic = selectedCategory === 'music';
+  const isMap = selectedCategory === 'map';
+  const isAutoGraded = isKnowledge || isQuote || isMusic;
   const currentPlayer = players[currentPlayerIndex];
   const currentParty = PARTIES.find(p => p.id === currentPlayer?.party);
 
@@ -34,7 +41,7 @@ const BattleArena = () => {
     if (revealed || timedOut) return;
     if (timeLeft <= 0) {
       setTimedOut(true);
-      if (isKnowledge) setRevealed(true);
+      if (isAutoGraded) setRevealed(true);
       playBuzzer();
       return;
     }
@@ -45,7 +52,7 @@ const BattleArena = () => {
     }
     const t = setTimeout(() => setTimeLeft(timeLeft - 1), 1000);
     return () => clearTimeout(t);
-  }, [timeLeft, revealed, timedOut, isKnowledge]);
+  }, [timeLeft, revealed, timedOut, isAutoGraded]);
 
   useEffect(() => {
     if (!revealed && !timedOut) setTimeLeft(prev => Math.max(prev, timerSeconds));
@@ -57,28 +64,45 @@ const BattleArena = () => {
   const handleAnswer = useCallback((option: string) => {
     if (revealed || selectedAnswer) return;
     setSelectedAnswer(option);
+    setAnswerTimeLeft(timeLeft);
     setRevealed(true);
-    if (isKnowledge && currentChallenge) {
+    if (isAutoGraded && currentChallenge) {
       answersMatch(option, currentChallenge.correctAnswer) ? playCorrect() : playWrong();
     }
-  }, [revealed, selectedAnswer, isKnowledge, currentChallenge]);
+  }, [revealed, selectedAnswer, isAutoGraded, currentChallenge, timeLeft]);
 
   const isCorrect = selectedAnswer && currentChallenge
     ? answersMatch(selectedAnswer, currentChallenge.correctAnswer)
     : false;
 
-  // 1:1 ratio — reward equals exact bet
-  const mandateReward = currentBet;
+  // 1:1 ratio — reward equals exact bet, unless a quote hint/speed modifier applies
+  const mandateReward = isQuote
+    ? hintUsed
+      ? Math.round(currentBet * 0.75)
+      : answerTimeLeft !== null && timerSeconds - answerTimeLeft <= 5
+        ? Math.round(currentBet * 1.2)
+        : currentBet
+    : currentBet;
 
   const handleKnowledgeResult = () => {
     if (timedOut || !isCorrect) {
       // Initiator (turn player) is NEVER penalized for failure — turn just ends
       addNewsHeadline(`📉 ${currentParty?.name} לא הצליחו בסבב הזה — התור עובר`, 'update');
     } else {
-      resolveRound(currentPlayer.id);
+      resolveRound(currentPlayer.id, mandateReward);
       addNewsHeadline(`⚡ ${currentParty?.name} צדקו בעובדות וזכו ב-${mandateReward} מנדטים!`, 'breaking');
       return;
     }
+    nextTurn();
+  };
+
+  const handleMapResolved = (rewardMandates: number) => {
+    if (rewardMandates > 0) {
+      resolveRound(currentPlayer.id, rewardMandates);
+      addNewsHeadline(`🗺️ ${currentParty?.name} כיוונו נכון וזכו ב-${rewardMandates} מנדטים!`, 'breaking');
+      return;
+    }
+    addNewsHeadline(`📉 ${currentParty?.name} החטיאו את המיקום — התור עובר`, 'update');
     nextTurn();
   };
 
@@ -103,8 +127,9 @@ const BattleArena = () => {
     );
   }
 
-  // ─── KNOWLEDGE MODE ───
-  if (isKnowledge) {
+  // ─── AUTO-GRADED MODES: KNOWLEDGE / QUOTE / MUSIC ───
+  if (isAutoGraded) {
+    const modeLabel = isQuote ? 'מי אמר?' : isMusic ? 'זהה את השיר' : 'ידע';
     return (
       <motion.div
         initial={{ opacity: 0, scale: 0.95 }}
@@ -114,14 +139,30 @@ const BattleArena = () => {
       >
         <DifficultyBadge difficulty={challengeDifficulty} />
         <div className="px-3 py-1 rounded-full text-[10px] font-display font-bold bg-primary/20 text-primary border border-primary/30">
-          🤖 שיפוט אוטומטי — ידע
+          🤖 שיפוט אוטומטי — {modeLabel}
         </div>
         <LiveHeader district={district} />
         <CircularTimer timeLeft={timeLeft} timerSeconds={timerSeconds} circumference={circumference} strokeDashoffset={strokeDashoffset} />
 
         <div className="glass-panel p-5 w-full max-w-sm text-center border-t-2 border-accent/50">
           <p className="text-lg font-display font-bold text-foreground leading-relaxed">{currentChallenge.question}</p>
+          {isQuote && !revealed && (
+            hintUsed ? (
+              <p className="text-xs text-accent font-display mt-2">💡 {currentChallenge.contextHint}</p>
+            ) : (
+              <button
+                onClick={() => setHintUsed(true)}
+                className="mt-3 flex items-center gap-1 mx-auto text-xs text-accent font-display underline underline-offset-2"
+              >
+                <Lightbulb size={12} /> רמז (מוריד את הפרס ל-75%)
+              </button>
+            )
+          )}
         </div>
+
+        {isMusic && currentChallenge.audioUrl && (
+          <audio key={currentChallenge.audioUrl} src={currentChallenge.audioUrl} controls autoPlay className="w-full max-w-sm" />
+        )}
 
         <div className="grid gap-3 w-full max-w-sm">
           <AnimatePresence>
@@ -167,6 +208,27 @@ const BattleArena = () => {
             </Button>
           </motion.div>
         )}
+      </motion.div>
+    );
+  }
+
+  // ─── MAP MODE (זיהוי מקומות) ───
+  if (isMap) {
+    return (
+      <motion.div
+        initial={{ opacity: 0, scale: 0.95 }}
+        animate={shouldShake ? { opacity: 1, scale: 1, x: [0, -3, 3, -3, 3, 0] } : { opacity: 1, scale: 1 }}
+        transition={shouldShake ? { x: { repeat: Infinity, duration: 0.4 } } : undefined}
+        className="flex flex-col items-center gap-4 p-4"
+      >
+        <DifficultyBadge difficulty={challengeDifficulty} />
+        <div className="px-3 py-1 rounded-full text-[10px] font-display font-bold bg-primary/20 text-primary border border-primary/30">
+          🤖 שיפוט אוטומטי — זיהוי מקומות
+        </div>
+        <LiveHeader district={district} />
+        <CircularTimer timeLeft={timeLeft} timerSeconds={timerSeconds} circumference={circumference} strokeDashoffset={strokeDashoffset} />
+
+        <MapPinChallenge challenge={currentChallenge} bet={currentBet} timedOut={timedOut} onResolved={handleMapResolved} />
       </motion.div>
     );
   }
