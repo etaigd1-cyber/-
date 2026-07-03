@@ -32,7 +32,8 @@ const BattleArena = () => {
   const isQuote = selectedCategory === 'quote';
   const isMusic = selectedCategory === 'music';
   const isMap = selectedCategory === 'map';
-  const isAutoGraded = isKnowledge || isQuote || isMusic;
+  const isPhoto = selectedCategory === 'photo';
+  const isAutoGraded = isKnowledge || isQuote || isMusic || isPhoto;
   const currentPlayer = players[currentPlayerIndex];
   const currentParty = PARTIES.find(p => p.id === currentPlayer?.party);
 
@@ -136,9 +137,9 @@ const BattleArena = () => {
     );
   }
 
-  // ─── AUTO-GRADED MODES: KNOWLEDGE / QUOTE / MUSIC ───
+  // ─── AUTO-GRADED MODES: KNOWLEDGE / QUOTE / MUSIC / PHOTO ───
   if (isAutoGraded) {
-    const modeLabel = isQuote ? 'מי אמר?' : isMusic ? 'זהה את השיר' : 'ידע';
+    const modeLabel = isQuote ? 'מי אמר?' : isMusic ? 'זהה את השיר' : isPhoto ? 'מה בתמונה?' : 'ידע';
     return (
       <motion.div
         initial={{ opacity: 0, scale: 0.95 }}
@@ -153,21 +154,27 @@ const BattleArena = () => {
         <LiveHeader district={district} />
         <CircularTimer timeLeft={timeLeft} timerSeconds={timerSeconds} circumference={circumference} strokeDashoffset={strokeDashoffset} />
 
-        <div className="glass-panel p-5 w-full max-w-sm text-center border-t-2 border-accent/50">
-          <p className="text-lg font-display font-bold text-foreground leading-relaxed">{currentChallenge.question}</p>
-          {isQuote && !revealed && (
-            hintUsed ? (
-              <p className="text-xs text-accent font-display mt-2">💡 {currentChallenge.contextHint}</p>
-            ) : (
-              <button
-                onClick={() => setHintUsed(true)}
-                className="mt-3 flex items-center gap-1 mx-auto text-xs text-accent font-display underline underline-offset-2"
-              >
-                <Lightbulb size={12} /> רמז (מוריד את הפרס ל-75%)
-              </button>
-            )
-          )}
-        </div>
+        {isPhoto && currentChallenge.imageUrl ? (
+          <div className="glass-panel p-2 w-full max-w-sm overflow-hidden rounded-lg border-t-2 border-accent/50">
+            <img src={currentChallenge.imageUrl} alt="מה בתמונה?" className="w-full h-48 object-cover rounded" />
+          </div>
+        ) : (
+          <div className="glass-panel p-5 w-full max-w-sm text-center border-t-2 border-accent/50">
+            <p className="text-lg font-display font-bold text-foreground leading-relaxed">{currentChallenge.question}</p>
+            {isQuote && !revealed && (
+              hintUsed ? (
+                <p className="text-xs text-accent font-display mt-2">💡 {currentChallenge.contextHint}</p>
+              ) : (
+                <button
+                  onClick={() => setHintUsed(true)}
+                  className="mt-3 flex items-center gap-1 mx-auto text-xs text-accent font-display underline underline-offset-2"
+                >
+                  <Lightbulb size={12} /> רמז (מוריד את הפרס ל-75%)
+                </button>
+              )
+            )}
+          </div>
+        )}
 
         {isMusic && currentChallenge.audioUrl && (
           <audio key={currentChallenge.audioUrl} src={currentChallenge.audioUrl} controls autoPlay className="w-full max-w-sm" />

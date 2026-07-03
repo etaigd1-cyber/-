@@ -28,6 +28,7 @@ const mapPlayerRowToPlayer = (row: PlayerRow): Player => {
       quote: { won: 0, lost: 0 },
       map: { won: 0, lost: 0 },
       music: { won: 0, lost: 0 },
+      photo: { won: 0, lost: 0 },
       ...player.categoryStats,
     },
   };

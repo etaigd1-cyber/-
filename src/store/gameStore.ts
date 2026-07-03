@@ -6,6 +6,8 @@ import { getRandomMission } from '@/lib/challengeBank';
 import { getRandomQuote } from '@/lib/quoteBank';
 import { getRandomSong } from '@/lib/musicBank';
 import { getRandomLocation } from '@/lib/locationBank';
+import { getRandomPhoto } from '@/lib/photoBank';
+import { shuffleOptions } from '@/lib/utils';
 import { logMandateTransaction, updatePublicTreasury } from '@/lib/mandateLogger';
 import { supabase } from '@/integrations/supabase/client';
 import type { Database } from '@/integrations/supabase/types';
@@ -26,6 +28,7 @@ const initialCategoryStats = (): Record<ChallengeCategory, { won: number; lost: 
   quote: { won: 0, lost: 0 },
   map: { won: 0, lost: 0 },
   music: { won: 0, lost: 0 },
+  photo: { won: 0, lost: 0 },
 });
 
 const makeHeadline = (text: string, type: NewsHeadline['type'] = 'update'): NewsHeadline => ({
@@ -424,8 +427,8 @@ export const useGameStore = create<GameStore>((set, get) => ({
       return;
     }
 
-    // Quote / Map / Music: self-contained local content banks (image_questions_list.xlsx-backed)
-    if (cat === 'quote' || cat === 'map' || cat === 'music') {
+    // Quote / Map / Music / Photo: self-contained local content banks (image_questions_list.xlsx-backed)
+    if (cat === 'quote' || cat === 'map' || cat === 'music' || cat === 'photo') {
       const playerAge = player?.age ?? 18;
       const ageGroup: AgeGroup = playerAge < 12 ? 'ילד' : playerAge < 18 ? 'נוער' : 'מבוגר';
       let challenge: Challenge;
@@ -433,16 +436,23 @@ export const useGameStore = create<GameStore>((set, get) => ({
       if (cat === 'quote') {
         const q = getRandomQuote(playerAge);
         challenge = {
-          id: -1, challengeType: 'quote', question: q.quote, options: q.options,
+          id: -1, challengeType: 'quote', question: q.quote, options: shuffleOptions(q.options),
           correctAnswer: q.answer, ageGroup, interestTag: null, category: 'מי אמר?',
           contextHint: `${q.context} (${q.year})`,
         };
       } else if (cat === 'music') {
         const song = getRandomSong();
         challenge = {
-          id: -1, challengeType: 'music', question: 'איזה שיר מתנגן?', options: song.options,
+          id: -1, challengeType: 'music', question: 'איזה שיר מתנגן?', options: shuffleOptions(song.options),
           correctAnswer: song.title, ageGroup, interestTag: null, category: 'זהה את השיר',
           audioUrl: song.audioFile,
+        };
+      } else if (cat === 'photo') {
+        const p = getRandomPhoto(playerAge);
+        challenge = {
+          id: -1, challengeType: 'photo', question: '', options: shuffleOptions(p.options),
+          correctAnswer: p.answer, ageGroup, interestTag: null, category: 'מה בתמונה?',
+          imageUrl: p.imageUrl,
         };
       } else {
         const loc = getRandomLocation(playerAge);

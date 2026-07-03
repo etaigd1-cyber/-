@@ -42,7 +42,7 @@ export const DISTRICTS: District[] = [
   { id: 'arava',          name: 'הערבה',            emoji: '🌵', maxMandates: 5 },
 ];
 
-export type ChallengeCategory = 'knowledge' | 'mission' | 'debate' | 'quote' | 'map' | 'music';
+export type ChallengeCategory = 'knowledge' | 'mission' | 'debate' | 'quote' | 'map' | 'music' | 'photo';
 
 export const CATEGORIES: { id: ChallengeCategory; name: string; emoji: string; timer: number }[] = [
   { id: 'knowledge', name: 'ידע', emoji: '🧠', timer: 30 },
@@ -51,6 +51,7 @@ export const CATEGORIES: { id: ChallengeCategory; name: string; emoji: string; t
   { id: 'quote', name: 'מי אמר?', emoji: '💬', timer: 20 },
   { id: 'map', name: 'זיהוי מקומות', emoji: '🗺️', timer: 30 },
   { id: 'music', name: 'זהה את השיר', emoji: '🎵', timer: 30 },
+  { id: 'photo', name: 'מה בתמונה?', emoji: '📸', timer: 15 },
 ];
 
 export type Interest = 'politics' | 'music' | 'tv-cinema' | 'sports' | 'science' | 'history' | 'geography' | 'general';
