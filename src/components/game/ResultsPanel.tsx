@@ -4,12 +4,13 @@ import { useGameStore } from '@/store/gameStore';
 import { Button } from '@/components/ui/button';
 
 const ResultsPanel = () => {
-  const { players, currentPlayerIndex, battleParticipants, currentBet, nextTurn, setPhase } = useGameStore();
+  const { players, currentPlayerIndex, battleParticipants, lastMandateReward, nextTurn, setPhase } = useGameStore();
   const currentPlayer = players[currentPlayerIndex];
   const allParticipants = [currentPlayer, ...players.filter(p => battleParticipants.includes(p.id))];
 
-  // 1:1 ratio — reward equals exact bet
-  const mandateReward = currentBet;
+  // Actual amount awarded by resolveRound — may differ from the original bet
+  // for partial-credit modes (quote hint/speed bonus, map accuracy tiers).
+  const mandateReward = lastMandateReward;
 
   const handleNext = () => {
     nextTurn();

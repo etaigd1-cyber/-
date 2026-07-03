@@ -54,8 +54,17 @@ const BattleArena = () => {
     return () => clearTimeout(t);
   }, [timeLeft, revealed, timedOut, isAutoGraded]);
 
+  // Only add the *delta* when timerSeconds grows (e.g. crowd-clap bonus seconds).
+  // Using Math.max(prev, timerSeconds) here would snap timeLeft all the way back up
+  // to the new timerSeconds value instead of granting just the bonus seconds —
+  // e.g. at 24s left with timerSeconds going 30->31 it would jump timeLeft to 31.
+  const prevTimerSecondsRef = useRef(timerSeconds);
   useEffect(() => {
-    if (!revealed && !timedOut) setTimeLeft(prev => Math.max(prev, timerSeconds));
+    const delta = timerSeconds - prevTimerSecondsRef.current;
+    prevTimerSecondsRef.current = timerSeconds;
+    if (delta > 0 && !revealed && !timedOut) {
+      setTimeLeft(prev => prev + delta);
+    }
   }, [timerSeconds, revealed, timedOut]);
 
   const answersMatch = (selected: string, correct: string) =>
@@ -67,7 +76,7 @@ const BattleArena = () => {
     setAnswerTimeLeft(timeLeft);
     setRevealed(true);
     if (isAutoGraded && currentChallenge) {
-      answersMatch(option, currentChallenge.correctAnswer) ? playCorrect() : playWrong();
+      if (answersMatch(option, currentChallenge.correctAnswer)) playCorrect(); else playWrong();
     }
   }, [revealed, selectedAnswer, isAutoGraded, currentChallenge, timeLeft]);
 

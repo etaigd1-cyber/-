@@ -14,8 +14,24 @@ type RoomRow = Database['public']['Tables']['rooms']['Row'];
 let roomChannel: RealtimeChannel | null = null;
 let playersChannel: RealtimeChannel | null = null;
 
-const mapPlayerRowToPlayer = (row: PlayerRow): Player =>
-  row.player_state as unknown as Player;
+const mapPlayerRowToPlayer = (row: PlayerRow): Player => {
+  const player = row.player_state as unknown as Player;
+  // Backfill categoryStats for players persisted before newer challenge
+  // categories (quote/map/music) existed — avoids undefined lookups in
+  // resolveRound() and the Dashboard stat bars.
+  return {
+    ...player,
+    categoryStats: {
+      knowledge: { won: 0, lost: 0 },
+      mission: { won: 0, lost: 0 },
+      debate: { won: 0, lost: 0 },
+      quote: { won: 0, lost: 0 },
+      map: { won: 0, lost: 0 },
+      music: { won: 0, lost: 0 },
+      ...player.categoryStats,
+    },
+  };
+};
 
 // ── Sync players from DB into Zustand ──
 export const syncPlayersFromCloud = async (roomId: string) => {

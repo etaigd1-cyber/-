@@ -85,7 +85,7 @@ const Dashboard = () => {
 
             <div className="grid grid-cols-3 gap-2">
               {CATEGORIES.map((cat) => {
-                const stats = player.categoryStats[cat.id];
+                const stats = player.categoryStats[cat.id] || { won: 0, lost: 0 };
                 const total = stats.won + stats.lost;
                 const pct = total > 0 ? Math.round((stats.won / total) * 100) : 0;
                 return (

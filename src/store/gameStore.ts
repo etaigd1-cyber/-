@@ -102,6 +102,10 @@ interface GameStore extends GameState {
   // Debounce guard
   _lastNextTurnAt: number;
 
+  // Actual mandate amount awarded in the last resolveRound call (can differ from
+  // currentBet for partial-credit modes like quote/map) — used by the results screen.
+  lastMandateReward: number;
+
   setPhase: (phase: GamePhase) => void;
   startGame: () => Promise<void>;
   createRoom: () => Promise<boolean>;
@@ -179,6 +183,7 @@ export const useGameStore = create<GameStore>((set, get) => ({
   timerEndAt: null,
   _askedQuestionIds: new Set<number>(),
   _lastNextTurnAt: 0,
+  lastMandateReward: 0,
 
   setLocalPlayerId: (id) => set({ localPlayerId: id }),
   setTimerEndAt: (ts) => {
@@ -732,7 +737,7 @@ export const useGameStore = create<GameStore>((set, get) => ({
     if (player) void pushPlayerState(player);
   },
 
-  resolveRound: (winnerId, rewardOverride) =>
+  resolveRound: (winnerId, rewardOverride) => {
     set((s) => {
       const winner = s.players.find(p => p.id === winnerId);
       const cat = s.selectedCategory;
@@ -742,16 +747,17 @@ export const useGameStore = create<GameStore>((set, get) => ({
       const taken = conquests.reduce((sum, c) => sum + c.mandates, 0);
       const available = districtObj ? Math.max(0, districtObj.maxMandates - taken) : s.currentBet;
       const mandateReward = Math.min(rewardOverride ?? s.currentBet, available);
+      const emptyStat = { won: 0, lost: 0 };
 
       const updatedPlayers = s.players.map((p) => {
         if (p.id === winnerId) {
           const newStats = { ...p.categoryStats };
-          if (cat) newStats[cat] = { ...newStats[cat], won: newStats[cat].won + 1 };
+          if (cat) newStats[cat] = { ...(newStats[cat] || emptyStat), won: (newStats[cat]?.won ?? 0) + 1 };
           return { ...p, battlesWon: p.battlesWon + 1, categoryStats: newStats, mandates: p.mandates + mandateReward };
         }
         if (s.battleParticipants.includes(p.id) && p.id !== winnerId) {
           const newStats = { ...p.categoryStats };
-          if (cat) newStats[cat] = { ...newStats[cat], lost: newStats[cat].lost + 1 };
+          if (cat) newStats[cat] = { ...(newStats[cat] || emptyStat), lost: (newStats[cat]?.lost ?? 0) + 1 };
           return { ...p, battlesLost: p.battlesLost + 1, categoryStats: newStats };
         }
         return p;
@@ -763,7 +769,7 @@ export const useGameStore = create<GameStore>((set, get) => ({
       }
 
       const victoryWinner = updatedPlayers.find(p => p.mandates >= VICTORY_MANDATES);
-      let newDistrictMandates = { ...s.districtMandates };
+      const newDistrictMandates = { ...s.districtMandates };
       if (s.selectedDistrict && winner) {
         const existing = newDistrictMandates[s.selectedDistrict] || [];
         const playerEntry = existing.find(e => e.playerId === winnerId);
@@ -783,6 +789,7 @@ export const useGameStore = create<GameStore>((set, get) => ({
         players: updatedPlayers,
         phase: victoryWinner ? 'victory' as GamePhase : 'results' as GamePhase,
         districtMandates: newDistrictMandates,
+        lastMandateReward: mandateReward,
         newsHeadlines: pushHeadline(
           s.newsHeadlines,
           victoryWinner
@@ -791,7 +798,9 @@ export const useGameStore = create<GameStore>((set, get) => ({
           'breaking'
         ),
       };
-    }),
+    });
+    void pushRoomState();
+  },
 
   nextTurn: () => {
     // Debounce: prevent double-turns within 1 second

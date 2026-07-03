@@ -6,7 +6,9 @@ import { Button } from '@/components/ui/button';
 
 const WowEvent = () => {
   const { wowEvent, nextTurn, players } = useGameStore();
-  const [countdown, setCountdown] = useState(wowEvent === 'screen-lock-debate' ? 3 : 30);
+  // screen-lock-debate: 3s intro (topic reveal, handled by the 'intro' phase timeout below)
+  // then 10s for the actual speech once phase becomes 'active' — see description text below.
+  const [countdown, setCountdown] = useState(wowEvent === 'screen-lock-debate' ? 10 : 30);
   const [phase, setPhase] = useState<'intro' | 'active' | 'done'>('intro');
 
   useEffect(() => {
