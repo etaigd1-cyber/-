@@ -9,6 +9,7 @@ import Lobby from "./pages/Lobby";
 import GameRoom from "./pages/GameRoom";
 import ScanCard from "./pages/ScanCard";
 import NotFound from "./pages/NotFound";
+import AdminPanel from "./components/game/AdminPanel";
 
 class ErrorBoundary extends Component<{ children: ReactNode }, { error: Error | null }> {
   constructor(props: { children: ReactNode }) {
@@ -52,6 +53,7 @@ const App = () => (
             <Route path="/scan" element={<ScanCard />} />
             <Route path="*" element={<NotFound />} />
           </Routes>
+          <AdminPanel />
         </BrowserRouter>
       </TooltipProvider>
     </QueryClientProvider>

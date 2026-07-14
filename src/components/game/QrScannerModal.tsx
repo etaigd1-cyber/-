@@ -11,9 +11,11 @@ import { pushRoomState, pushPlayerState } from '@/lib/roomSync';
 import { fetchCardData, type GameCard } from '@/lib/fetchGameData';
 
 /** Known card keys and their visual metadata */
-type KnownCardKey = 'jail' | 'skip_self' | 'skip_pick' | 'bonus_2' | 'bonus_3' | 'bonus_5' | 'global_mission';
+export type KnownCardKey = 'jail' | 'skip_self' | 'skip_pick' | 'bonus_2' | 'bonus_3' | 'bonus_5' | 'global_mission';
 
-const CARD_VISUALS: Record<KnownCardKey, { title: string; description: string; icon: React.ReactNode; color: string }> = {
+export const KNOWN_CARD_KEYS: KnownCardKey[] = ['jail', 'skip_self', 'skip_pick', 'bonus_2', 'bonus_3', 'bonus_5', 'global_mission'];
+
+export const CARD_VISUALS: Record<KnownCardKey, { title: string; description: string; icon: React.ReactNode; color: string }> = {
   jail:           { title: '🔒 נשלחת לחקירה!', description: 'הוקפא לך 3 תורות. שב בשקט.', icon: <Lock size={28} />, color: 'border-destructive/40 bg-destructive/10' },
   skip_self:      { title: '⏭️ דילוג עצמי', description: 'התור שלך דולג אוטומטית.', icon: <SkipForward size={28} />, color: 'border-muted-foreground/30 bg-muted/50' },
   skip_pick:      { title: '🎯 דלג על יריב', description: 'בחר שחקן אחר לדלג על התור שלו!', icon: <Users size={28} />, color: 'border-accent/40 bg-accent/10' },
@@ -83,7 +85,7 @@ function getCardVisuals(cardKey: string, sheetCard?: GameCard) {
 }
 
 /** Execute a card effect — returns a satirical headline for the breaking news */
-function handleCardEffect(
+export function handleCardEffect(
   cardKey: string,
   currentPlayer: ReturnType<typeof useGameStore.getState>['players'][number],
   pickTarget: string | null,

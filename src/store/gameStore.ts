@@ -150,6 +150,9 @@ interface GameStore extends GameState {
   submitDuelAnswer: (answer: string) => void;
   advanceDuel: () => void;
   resolvePenalty: (playerId: string, districtId: DistrictId | null, mode: 'personal' | 'district') => void;
+
+  // Admin-only: unrestricted testing helper (see AdminPanel.tsx)
+  adminConquerDistrict: (playerId: string, districtId: DistrictId, mandates: number) => void;
 }
 
 export const useGameStore = create<GameStore>((set, get) => ({
@@ -1085,6 +1088,23 @@ export const useGameStore = create<GameStore>((set, get) => ({
 
     // Sync
     get().players.forEach(p => void pushPlayerState(p));
+    void pushRoomState();
+  },
+
+  adminConquerDistrict: (playerId, districtId, mandates) => {
+    const player = get().players.find(p => p.id === playerId);
+    if (!player) return;
+
+    set((s) => {
+      const existing = s.districtMandates[districtId] || [];
+      const entry = existing.find(e => e.playerId === playerId);
+      const updated = entry
+        ? existing.map(e => e.playerId === playerId ? { ...e, mandates: e.mandates + mandates } : e)
+        : [...existing, { playerId, partyId: player.party, mandates }];
+      return { districtMandates: { ...s.districtMandates, [districtId]: updated } };
+    });
+
+    get().addMandates(playerId, mandates);
     void pushRoomState();
   },
 }));
