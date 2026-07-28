@@ -5,6 +5,7 @@ import { useGameStore } from '@/store/gameStore';
 import { DISTRICTS, PARTIES } from '@/types/game';
 import { Button } from '@/components/ui/button';
 import { Slider } from '@/components/ui/slider';
+import DistrictIcon from '@/components/game/DistrictIcon';
 
 const getDifficultyLabel = (bet: number) => {
   if (bet <= 3) return { label: 'קל', emoji: '😎', color: 'text-coalition' };
@@ -48,8 +49,8 @@ const ArroganceMeter = () => {
             {party?.emoji} <span className="font-bold">{activePlayer?.name}</span> בוחר/ת כמה מנדטים להמר...
           </p>
           {district && (
-            <p className="text-xs text-muted-foreground mt-2">
-              {district.emoji} {district.name}
+            <p className="text-xs text-muted-foreground mt-2 flex items-center justify-center gap-1">
+              <DistrictIcon district={district} className="h-4 w-6" /> {district.name}
             </p>
           )}
         </div>
@@ -70,7 +71,7 @@ const ArroganceMeter = () => {
           <TrendingUp size={16} />
           <span className="font-display font-black text-sm">מד זחיחות</span>
           {district && (
-            <span className="text-xs opacity-80 mr-auto">| {district.emoji} {district.name}</span>
+            <span className="text-xs opacity-80 mr-auto flex items-center gap-1">| <DistrictIcon district={district} className="h-4 w-6" /> {district.name}</span>
           )}
         </div>
       </div>

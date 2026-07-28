@@ -6,6 +6,7 @@ import { Button } from '@/components/ui/button';
 import { DISTRICTS, PARTIES } from '@/types/game';
 import CrowdReaction from '@/components/game/CrowdReaction';
 import MapPinChallenge from '@/components/game/MapPinChallenge';
+import DistrictIcon from '@/components/game/DistrictIcon';
 import { playTick, playBuzzer, playCorrect, playWrong } from '@/lib/audioEffects';
 import { cleanAnswerText } from '@/lib/fetchGameData';
 const BattleArena = () => {
@@ -329,14 +330,14 @@ const DifficultyBadge = ({ difficulty }: { difficulty: string }) => {
   );
 };
 
-const LiveHeader = ({ district }: { district?: { emoji: string; name: string } }) => (
+const LiveHeader = ({ district }: { district?: { imageUrl: string; name: string } }) => (
   <div className="w-full max-w-sm">
     <div className="flex items-center gap-2 bg-destructive/90 text-destructive-foreground px-4 py-2 rounded-t-lg">
       <motion.div animate={{ opacity: [1, 0.3, 1] }} transition={{ repeat: Infinity, duration: 1.2 }}>
         <Radio size={14} />
       </motion.div>
       <span className="font-display font-black text-sm tracking-wider">שידור חי</span>
-      {district && <span className="text-xs opacity-80 mr-auto">| {district.emoji} {district.name}</span>}
+      {district && <span className="text-xs opacity-80 mr-auto flex items-center gap-1">| <DistrictIcon district={district} className="h-4 w-6" /> {district.name}</span>}
     </div>
   </div>
 );

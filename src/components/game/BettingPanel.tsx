@@ -4,6 +4,7 @@ import { TrendingUp, Minus, Plus, Radio } from 'lucide-react';
 import { useGameStore } from '@/store/gameStore';
 import { Button } from '@/components/ui/button';
 import { DISTRICTS } from '@/types/game';
+import DistrictIcon from '@/components/game/DistrictIcon';
 
 const BettingPanel = () => {
   const { setBet, selectedDistrict, getAvailableMandates } = useGameStore();
@@ -23,7 +24,7 @@ const BettingPanel = () => {
           <TrendingUp size={16} />
           <span className="font-display font-black text-sm">הימורי מנדטים</span>
           {district && (
-            <span className="text-xs opacity-80 mr-auto">| {district.emoji} {district.name}</span>
+            <span className="text-xs opacity-80 mr-auto flex items-center gap-1">| <DistrictIcon district={district} className="h-4 w-6" /> {district.name}</span>
           )}
         </div>
       </div>

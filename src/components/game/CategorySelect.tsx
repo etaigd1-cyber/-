@@ -2,10 +2,11 @@ import { useState } from 'react';
 import { motion } from 'framer-motion';
 import { QrCode, Battery, Zap, Shield, AlertTriangle, Hourglass } from 'lucide-react';
 import { useGameStore } from '@/store/gameStore';
-import { CATEGORIES, PARTIES } from '@/types/game';
+import { CATEGORIES, PARTIES, DISTRICTS } from '@/types/game';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import PowerBankDisplay from '@/components/game/PowerBankDisplay';
+import DistrictIcon from '@/components/game/DistrictIcon';
 
 const CategorySelect = () => {
   const {
@@ -14,6 +15,7 @@ const CategorySelect = () => {
   } = useGameStore();
   const [codeInput, setCodeInput] = useState('');
   const currentPlayer = players[currentPlayerIndex];
+  const inviteDistrict = battleInviteData ? DISTRICTS.find(d => d.id === battleInviteData.districtId) : undefined;
 
   // Determine if this device is the active player (initiator)
   const isActivePlayer = localPlayerId === battleInviteData?.initiatorId
@@ -42,8 +44,8 @@ const CategorySelect = () => {
             {party?.emoji} <span className="font-bold">{initiator?.name}</span> בוחר/ת קטגוריה...
           </p>
           {battleInviteData && (
-            <p className="text-xs text-muted-foreground mt-2">
-              {battleInviteData.districtEmoji} {battleInviteData.districtName} | הימור: {battleInviteData.bet} מנדטים
+            <p className="text-xs text-muted-foreground mt-2 flex items-center justify-center gap-1">
+              <DistrictIcon district={inviteDistrict} className="h-4 w-6" /> {battleInviteData.districtName} | הימור: {battleInviteData.bet} מנדטים
             </p>
           )}
         </div>

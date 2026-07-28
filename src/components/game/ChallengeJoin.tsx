@@ -3,6 +3,7 @@ import { Swords, Users } from 'lucide-react';
 import { useGameStore } from '@/store/gameStore';
 import { DISTRICTS, PARTIES } from '@/types/game';
 import { Button } from '@/components/ui/button';
+import DistrictIcon from '@/components/game/DistrictIcon';
 
 const ChallengeJoin = () => {
   const { players, currentPlayerIndex, battleParticipants, joinBattle, setPhase, selectedDistrict, districtMandates } = useGameStore();
@@ -27,8 +28,8 @@ const ChallengeJoin = () => {
       </div>
 
       <div className="glass-panel p-4 text-center w-full max-w-sm">
-        <p className="text-sm text-foreground font-display">
-          {district?.emoji} <span className="font-bold">{district?.name}</span>
+        <p className="text-sm text-foreground font-display flex items-center justify-center gap-1">
+          <DistrictIcon district={district} className="h-5 w-8" /> <span className="font-bold">{district?.name}</span>
         </p>
         <p className="text-xs text-muted-foreground mt-1">
           {availableMandates} מנדטים פנויים — הזוכה לוקח הכל!

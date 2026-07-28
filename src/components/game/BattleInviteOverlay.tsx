@@ -2,14 +2,17 @@ import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Swords, Timer, Users } from 'lucide-react';
 import { useGameStore } from '@/store/gameStore';
-import { PARTIES } from '@/types/game';
+import { PARTIES, DISTRICTS } from '@/types/game';
 import { Button } from '@/components/ui/button';
+import DistrictIcon from '@/components/game/DistrictIcon';
 
 const BattleInviteOverlay = () => {
   const {
     battleInviteData, localPlayerId, players, battleParticipants,
     joinBattleInvite, setPhase, timerEndAt,
   } = useGameStore();
+
+  const inviteDistrict = battleInviteData ? DISTRICTS.find(d => d.id === battleInviteData.districtId) : undefined;
 
   const [timeLeft, setTimeLeft] = useState(9);
   const [hasJoined, setHasJoined] = useState(false);
@@ -73,8 +76,8 @@ const BattleInviteOverlay = () => {
         </div>
 
         <div className="glass-panel p-4 text-center w-full max-w-sm">
-          <p className="text-sm text-foreground font-display">
-            {battleInviteData.districtEmoji} <span className="font-bold">{battleInviteData.districtName}</span>
+          <p className="text-sm text-foreground font-display flex items-center justify-center gap-1">
+            <DistrictIcon district={inviteDistrict} className="h-5 w-8" /> <span className="font-bold">{battleInviteData.districtName}</span>
           </p>
           <p className="text-xs text-muted-foreground mt-1">
             הימור: {battleInviteData.bet} מנדטים
@@ -138,8 +141,8 @@ const BattleInviteOverlay = () => {
           <p className="text-sm text-foreground font-display">
             <span className="font-bold">{battleInviteData.initiatorName}</span> מאתגר/ת ב
           </p>
-          <p className="text-lg font-display font-black text-accent mt-1">
-            {battleInviteData.districtEmoji} {battleInviteData.districtName}
+          <p className="text-lg font-display font-black text-accent mt-1 flex items-center justify-center gap-1">
+            <DistrictIcon district={inviteDistrict} className="h-6 w-9" /> {battleInviteData.districtName}
           </p>
           <p className="text-xs text-muted-foreground mt-1">
             הימור: {battleInviteData.bet} מנדטים | מפסיד: -2 קנס

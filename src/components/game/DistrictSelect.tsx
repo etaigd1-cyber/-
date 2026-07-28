@@ -2,6 +2,7 @@ import { motion } from 'framer-motion';
 import { MapPin, Radio, Lock, Hourglass } from 'lucide-react';
 import { useGameStore } from '@/store/gameStore';
 import { DISTRICTS, PARTIES, type DistrictId } from '@/types/game';
+import DistrictIcon from '@/components/game/DistrictIcon';
 
 const DistrictSelect = () => {
   const { selectDistrict, players, currentPlayerIndex, districtMandates, localPlayerId, activePlayerId } = useGameStore();
@@ -101,7 +102,7 @@ const DistrictSelect = () => {
             >
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-3">
-                  <span className="text-xl">{district.emoji}</span>
+                  <DistrictIcon district={district} className="h-9 w-14 shrink-0" />
                   <div>
                     <span className="font-display font-bold text-foreground text-sm block">
                       {district.name}

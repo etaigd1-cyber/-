@@ -25,21 +25,22 @@ export type DistrictId =
 export interface District {
   id: DistrictId;
   name: string;
-  emoji: string;
+  /** Road-sign graphic representing this district, served from /public */
+  imageUrl: string;
   maxMandates: number;
 }
 
 export const DISTRICTS: District[] = [
-  { id: 'golan',          name: 'הגולן',            emoji: '🗻', maxMandates: 5 },
-  { id: 'north',          name: 'הצפון',            emoji: '🌿', maxMandates: 8 },
-  { id: 'haifa',          name: 'חיפה והקריות',     emoji: '⚓', maxMandates: 10 },
-  { id: 'sharon',         name: 'השרון',            emoji: '🌊', maxMandates: 8 },
-  { id: 'tel-aviv',       name: 'תל אביב',         emoji: '🏙️', maxMandates: 12 },
-  { id: 'gush-dan',       name: 'גוש דן',           emoji: '🏘️', maxMandates: 12 },
-  { id: 'jerusalem',      name: 'ירושלים',          emoji: '🕌', maxMandates: 15 },
-  { id: 'judea-samaria',  name: 'יהודה ושומרון',    emoji: '⛰️', maxMandates: 7 },
-  { id: 'negev',          name: 'הנגב',             emoji: '🏜️', maxMandates: 8 },
-  { id: 'arava',          name: 'הערבה',            emoji: '🌵', maxMandates: 5 },
+  { id: 'golan',          name: 'הגולן',            imageUrl: '/districts/golan.png', maxMandates: 5 },
+  { id: 'north',          name: 'הצפון',            imageUrl: '/districts/north.png', maxMandates: 8 },
+  { id: 'haifa',          name: 'חיפה והקריות',     imageUrl: '/districts/haifa.png', maxMandates: 10 },
+  { id: 'sharon',         name: 'השרון',            imageUrl: '/districts/sharon.png', maxMandates: 8 },
+  { id: 'tel-aviv',       name: 'תל אביב',         imageUrl: '/districts/tel-aviv.png', maxMandates: 12 },
+  { id: 'gush-dan',       name: 'גוש דן',           imageUrl: '/districts/gush-dan.png', maxMandates: 12 },
+  { id: 'jerusalem',      name: 'ירושלים',          imageUrl: '/districts/jerusalem.png', maxMandates: 15 },
+  { id: 'judea-samaria',  name: 'יהודה ושומרון',    imageUrl: '/districts/judea-samaria.png', maxMandates: 7 },
+  { id: 'negev',          name: 'הנגב',             imageUrl: '/districts/negev.png', maxMandates: 8 },
+  { id: 'arava',          name: 'הערבה',            imageUrl: '/districts/arava.png', maxMandates: 5 },
 ];
 
 export type ChallengeCategory = 'knowledge' | 'mission' | 'debate' | 'quote' | 'map' | 'music' | 'photo';

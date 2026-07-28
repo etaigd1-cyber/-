@@ -4,6 +4,7 @@ import { SkipForward, MapPin, ArrowLeft } from 'lucide-react';
 import { useGameStore } from '@/store/gameStore';
 import { DISTRICTS, PARTIES } from '@/types/game';
 import { toast } from 'sonner';
+import DistrictIcon from '@/components/game/DistrictIcon';
 
 const SKIP_QUIPS = [
   '🐔 פחדנות מזוהה! דילגת על המשימה אבל גבית את המיסים.',
@@ -112,7 +113,7 @@ const SkipTurnPanel = () => {
                   >
                     <span className="flex items-center gap-1.5">
                       <MapPin size={14} />
-                      {d.emoji} {d.name}
+                      <DistrictIcon district={d} className="h-4 w-6" /> {d.name}
                     </span>
                   </button>
                 ))}

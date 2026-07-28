@@ -9,6 +9,7 @@ import {
   type DistrictId, type ChallengeCategory, type GamePhase, type WowEvent,
 } from '@/types/game';
 import { handleCardEffect, CARD_VISUALS, KNOWN_CARD_KEYS, type KnownCardKey } from '@/components/game/QrScannerModal';
+import DistrictIcon from '@/components/game/DistrictIcon';
 
 const ADMIN_PASSWORD = '1311';
 const STORAGE_KEY = 'admin-unlocked';
@@ -230,7 +231,7 @@ const AdminPanel = () => {
                       districtId === d.id ? 'border-accent bg-accent/15' : 'border-border bg-muted/30 text-muted-foreground'
                     }`}
                   >
-                    {d.emoji} {d.name}
+                    <DistrictIcon district={d} className="h-4 w-6" /> {d.name}
                   </button>
                 ))}
               </div>

@@ -4,6 +4,7 @@ import { CheckCircle2, XCircle, Radio, Skull, Crown, Swords, Hourglass } from 'l
 import { useGameStore } from '@/store/gameStore';
 import { Button } from '@/components/ui/button';
 import { DISTRICTS, PARTIES } from '@/types/game';
+import DistrictIcon from '@/components/game/DistrictIcon';
 import { playTick, playBuzzer, playCorrect, playWrong } from '@/lib/audioEffects';
 import { cleanAnswerText } from '@/lib/fetchGameData';
 import PenaltyRegionSelect from './PenaltyRegionSelect';
@@ -131,7 +132,7 @@ const SuddenDeathBattle = () => {
                 הצלחה! 🎉
               </motion.h2>
               <p className="text-base text-foreground font-display text-center">
-                +{currentBet} מנדטים ב{district?.name} {district?.emoji}
+                +{currentBet} מנדטים ב{district?.name} <DistrictIcon district={district} className="h-5 w-8" />
               </p>
             </>
           ) : (
@@ -161,7 +162,7 @@ const SuddenDeathBattle = () => {
               {winner.name} ניצח/ה! 👑
             </motion.h2>
             <p className="text-base text-foreground font-display text-center">
-              כבש/ה {currentBet} מנדטים ב{district?.name} {district?.emoji}
+              כבש/ה {currentBet} מנדטים ב{district?.name} <DistrictIcon district={district} className="h-5 w-8" />
             </p>
             {/* Eliminated players */}
             <div className="flex gap-2 flex-wrap justify-center">
@@ -241,7 +242,7 @@ const SuddenDeathBattle = () => {
             <Radio size={12} />
           </motion.div>
           <span className="font-display font-black text-[10px] tracking-wider">SUDDEN DEATH</span>
-          {district && <span className="text-[10px] opacity-80 mr-auto">| {district.emoji} {district.name}</span>}
+          {district && <span className="text-[10px] opacity-80 mr-auto flex items-center gap-1">| <DistrictIcon district={district} className="h-3.5 w-5" /> {district.name}</span>}
         </div>
       </div>
 

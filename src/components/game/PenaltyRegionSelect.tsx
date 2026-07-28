@@ -4,6 +4,7 @@ import { AlertTriangle, Minus, User, MapPin } from 'lucide-react';
 import { useGameStore, type PendingPenalty } from '@/store/gameStore';
 import { DISTRICTS, type DistrictId } from '@/types/game';
 import { Button } from '@/components/ui/button';
+import DistrictIcon from '@/components/game/DistrictIcon';
 
 interface Props {
   penalty: PendingPenalty;
@@ -163,7 +164,7 @@ const PenaltyRegionSelect = ({ penalty }: Props) => {
           >
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-2">
-                <span className="text-lg">{district?.emoji}</span>
+                <DistrictIcon district={district} className="h-6 w-9" />
                 <span className="font-display font-bold text-foreground text-sm">{district?.name}</span>
               </div>
               <div className="flex items-center gap-2">

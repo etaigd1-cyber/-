@@ -46,7 +46,6 @@ export interface BattleInviteData {
   initiatorName: string;
   districtId: DistrictId;
   districtName: string;
-  districtEmoji: string;
   bet: number;
   expiresAt: number; // timestamp
 }
@@ -375,7 +374,6 @@ export const useGameStore = create<GameStore>((set, get) => ({
       initiatorName: player.name,
       districtId: selectedDistrict,
       districtName: district.name,
-      districtEmoji: district.emoji,
       bet,
       expiresAt,
     };
