@@ -11,6 +11,7 @@ import {
 import { handleCardEffect, CARD_VISUALS, KNOWN_CARD_KEYS, type KnownCardKey } from '@/components/game/QrScannerModal';
 import DistrictIcon from '@/components/game/DistrictIcon';
 import PartyAvatar from '@/components/game/PartyAvatar';
+import CategoryIcon from '@/components/game/CategoryIcon';
 
 const ADMIN_PASSWORD = '1311';
 const STORAGE_KEY = 'admin-unlocked';
@@ -258,7 +259,7 @@ const AdminPanel = () => {
               <div className="flex flex-wrap gap-1.5">
                 {CATEGORIES.filter(c => TESTABLE_CATEGORIES.includes(c.id)).map((c) => (
                   <Button key={c.id} size="sm" variant="outline" disabled={!targetPlayer} onClick={() => handleTestCategory(c.id)} className="text-xs">
-                    {c.emoji} {c.name}
+                    <CategoryIcon category={c} className="h-4 w-4" /> {c.name}
                   </Button>
                 ))}
               </div>

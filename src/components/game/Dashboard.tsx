@@ -4,6 +4,7 @@ import { useGameStore } from '@/store/gameStore';
 import { CATEGORIES, PARTIES } from '@/types/game';
 import { Button } from '@/components/ui/button';
 import PartyAvatar from '@/components/game/PartyAvatar';
+import CategoryIcon from '@/components/game/CategoryIcon';
 
 const Dashboard = () => {
   const { players, setPhase } = useGameStore();
@@ -91,7 +92,7 @@ const Dashboard = () => {
                 const pct = total > 0 ? Math.round((stats.won / total) * 100) : 0;
                 return (
                   <div key={cat.id} className="text-center">
-                    <span className="text-lg">{cat.emoji}</span>
+                    <CategoryIcon category={cat} className="h-6 w-6" />
                     <div className="w-full bg-muted rounded-full h-1.5 mt-1">
                       <div
                         className="bg-primary rounded-full h-1.5 transition-all"

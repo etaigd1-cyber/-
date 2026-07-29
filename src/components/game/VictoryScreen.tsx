@@ -6,6 +6,7 @@ import { PARTIES, CATEGORIES } from '@/types/game';
 import { Button } from '@/components/ui/button';
 import { useNavigate } from 'react-router-dom';
 import PartyAvatar from '@/components/game/PartyAvatar';
+import CategoryIcon from '@/components/game/CategoryIcon';
 
 const VICTORY_VIDEO_URL = 'https://drive.google.com/file/d/1OQr-27e3jHzDhWX0C-GQhy1Ji01mO3Y6/preview';
 
@@ -214,7 +215,7 @@ const VictoryScreen = () => {
           </div>
           {bestCatInfo && (
             <div className="bg-muted/50 rounded-lg p-3 text-center">
-              <span className="text-lg">{bestCatInfo.emoji}</span>
+              <CategoryIcon category={bestCatInfo} className="h-7 w-7 mx-auto" />
               <p className="text-[10px] text-muted-foreground">קטגוריה חזקה</p>
               <p className="font-display font-bold text-foreground text-sm">{bestCatInfo.name}</p>
               <p className="text-xs text-primary">{bestCategory?.[1]?.won} ניצחונות</p>

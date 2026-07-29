@@ -8,6 +8,7 @@ import { Input } from '@/components/ui/input';
 import PowerBankDisplay from '@/components/game/PowerBankDisplay';
 import DistrictIcon from '@/components/game/DistrictIcon';
 import PartyAvatar from '@/components/game/PartyAvatar';
+import CategoryIcon from '@/components/game/CategoryIcon';
 
 const CategorySelect = () => {
   const {
@@ -173,7 +174,7 @@ const CategorySelect = () => {
             onClick={() => selectCategory(cat.id)}
             className="party-card border-border hover:border-primary/50 flex flex-col items-center gap-2 py-6"
           >
-            <span className="text-3xl">{cat.emoji}</span>
+            <CategoryIcon category={cat} className="h-12 w-12" />
             <span className="font-display font-bold text-foreground">{cat.name}</span>
             <span className="text-xs text-muted-foreground">{cat.timer} שניות</span>
           </motion.button>

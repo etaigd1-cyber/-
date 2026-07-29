@@ -44,14 +44,14 @@ export const DISTRICTS: District[] = [
 
 export type ChallengeCategory = 'knowledge' | 'mission' | 'debate' | 'quote' | 'map' | 'music' | 'photo';
 
-export const CATEGORIES: { id: ChallengeCategory; name: string; emoji: string; timer: number }[] = [
-  { id: 'knowledge', name: 'ידע', emoji: '🧠', timer: 30 },
-  { id: 'mission', name: 'משימה', emoji: '💪', timer: 60 },
-  { id: 'debate', name: 'דיבייט', emoji: '🗣️', timer: 60 },
-  { id: 'quote', name: 'מי אמר?', emoji: '💬', timer: 20 },
-  { id: 'map', name: 'זיהוי מקומות', emoji: '🗺️', timer: 30 },
-  { id: 'music', name: 'זהה את השיר', emoji: '🎵', timer: 30 },
-  { id: 'photo', name: 'מה בתמונה?', emoji: '📸', timer: 15 },
+export const CATEGORIES: { id: ChallengeCategory; name: string; imageUrl?: string; timer: number }[] = [
+  { id: 'knowledge', name: 'ידע', imageUrl: '/categories/knowledge.png', timer: 30 },
+  { id: 'mission', name: 'משימה', imageUrl: '/categories/mission.png', timer: 60 },
+  { id: 'debate', name: 'דיבייט', timer: 60 },
+  { id: 'quote', name: 'מי אמר?', imageUrl: '/categories/quote.png', timer: 20 },
+  { id: 'map', name: 'זיהוי מקומות', imageUrl: '/categories/map.png', timer: 30 },
+  { id: 'music', name: 'זהה את השיר', imageUrl: '/categories/music.png', timer: 30 },
+  { id: 'photo', name: 'מה בתמונה?', imageUrl: '/categories/photo.png', timer: 15 },
 ];
 
 export type Interest = 'politics' | 'music' | 'tv-cinema' | 'sports' | 'science' | 'history' | 'geography' | 'general';
