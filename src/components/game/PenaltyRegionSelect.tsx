@@ -164,7 +164,7 @@ const PenaltyRegionSelect = ({ penalty }: Props) => {
           >
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-2">
-                <DistrictIcon district={district} className="h-6 w-9" />
+                <DistrictIcon district={district} className="h-7 w-11" />
                 <span className="font-display font-bold text-foreground text-sm">{district?.name}</span>
               </div>
               <div className="flex items-center gap-2">

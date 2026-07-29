@@ -113,7 +113,7 @@ const SkipTurnPanel = () => {
                   >
                     <span className="flex items-center gap-1.5">
                       <MapPin size={14} />
-                      <DistrictIcon district={d} className="h-4 w-6" /> {d.name}
+                      <DistrictIcon district={d} className="h-7 w-11" /> {d.name}
                     </span>
                   </button>
                 ))}

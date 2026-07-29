@@ -231,7 +231,7 @@ const AdminPanel = () => {
                       districtId === d.id ? 'border-accent bg-accent/15' : 'border-border bg-muted/30 text-muted-foreground'
                     }`}
                   >
-                    <DistrictIcon district={d} className="h-4 w-6" /> {d.name}
+                    <DistrictIcon district={d} className="h-7 w-11" /> {d.name}
                   </button>
                 ))}
               </div>
