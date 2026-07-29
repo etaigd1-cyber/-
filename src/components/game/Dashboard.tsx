@@ -3,6 +3,7 @@ import { Trophy, BarChart3, Target, ArrowLeft, Radio } from 'lucide-react';
 import { useGameStore } from '@/store/gameStore';
 import { CATEGORIES, PARTIES } from '@/types/game';
 import { Button } from '@/components/ui/button';
+import PartyAvatar from '@/components/game/PartyAvatar';
 
 const Dashboard = () => {
   const { players, setPhase } = useGameStore();
@@ -60,7 +61,7 @@ const Dashboard = () => {
           >
             <div className="flex justify-between items-center mb-3">
               <div className="flex items-center gap-2">
-                <span className="text-2xl">{party?.emoji}</span>
+                <PartyAvatar partyId={party?.id} className="h-10 w-10 rounded-full" />
                 <div>
                   <p className="font-display font-bold text-foreground">{player.name}</p>
                   <p className="text-xs text-muted-foreground">

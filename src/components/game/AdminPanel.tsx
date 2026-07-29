@@ -10,6 +10,7 @@ import {
 } from '@/types/game';
 import { handleCardEffect, CARD_VISUALS, KNOWN_CARD_KEYS, type KnownCardKey } from '@/components/game/QrScannerModal';
 import DistrictIcon from '@/components/game/DistrictIcon';
+import PartyAvatar from '@/components/game/PartyAvatar';
 
 const ADMIN_PASSWORD = '1311';
 const STORAGE_KEY = 'admin-unlocked';
@@ -118,8 +119,7 @@ const AdminPanel = () => {
 
   const handleAddTestPlayer = () => {
     const n = players.length + 1;
-    const partyId = PARTIES[n % PARTIES.length].id;
-    useGameStore.getState().addPlayer(`בדיקה ${n}`, 25, [INTERESTS[0].id], partyId);
+    useGameStore.getState().addPlayer(`בדיקה ${n}`, 25, [INTERESTS[0].id], PARTIES[0].id);
   };
 
   return (
@@ -190,7 +190,7 @@ const AdminPanel = () => {
                         effectiveTargetId === p.id ? 'border-accent bg-accent/15 text-foreground' : 'border-border bg-muted/30 text-muted-foreground'
                       }`}
                     >
-                      {party?.emoji} {p.name} ({p.mandates})
+                      <PartyAvatar partyId={party?.id} className="h-6 w-6 rounded-full" /> {p.name} ({p.mandates})
                     </button>
                   );
                 })}

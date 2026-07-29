@@ -5,6 +5,7 @@ import { useGameStore } from '@/store/gameStore';
 import { PARTIES, DISTRICTS } from '@/types/game';
 import { Button } from '@/components/ui/button';
 import DistrictIcon from '@/components/game/DistrictIcon';
+import PartyAvatar from '@/components/game/PartyAvatar';
 
 const BattleInviteOverlay = () => {
   const {
@@ -106,7 +107,7 @@ const BattleInviteOverlay = () => {
             const party = p ? PARTIES.find(pt => pt.id === p.party) : null;
             return (
               <div key={pid} className="flex items-center gap-1 px-2.5 py-1 rounded-full text-[10px] font-display font-bold border border-coalition/50 bg-coalition/10 text-coalition">
-                {party?.emoji} {p?.name} ✅
+                <PartyAvatar partyId={party?.id} className="h-4 w-4 rounded-full" /> {p?.name} ✅
               </div>
             );
           })}

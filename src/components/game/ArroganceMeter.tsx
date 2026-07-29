@@ -6,6 +6,7 @@ import { DISTRICTS, PARTIES } from '@/types/game';
 import { Button } from '@/components/ui/button';
 import { Slider } from '@/components/ui/slider';
 import DistrictIcon from '@/components/game/DistrictIcon';
+import PartyAvatar from '@/components/game/PartyAvatar';
 
 const getDifficultyLabel = (bet: number) => {
   if (bet <= 3) return { label: 'קל', emoji: '😎', color: 'text-coalition' };
@@ -45,8 +46,8 @@ const ArroganceMeter = () => {
         </motion.div>
         <h2 className="text-xl font-display font-bold text-foreground">ממתין לבחירת הימור</h2>
         <div className="glass-panel p-4 text-center w-full max-w-sm">
-          <p className="text-sm text-foreground font-display">
-            {party?.emoji} <span className="font-bold">{activePlayer?.name}</span> בוחר/ת כמה מנדטים להמר...
+          <p className="text-sm text-foreground font-display flex items-center justify-center gap-1.5">
+            <PartyAvatar partyId={party?.id} className="h-6 w-6 rounded-full" /> <span className="font-bold">{activePlayer?.name}</span> בוחר/ת כמה מנדטים להמר...
           </p>
           {district && (
             <p className="text-xs text-muted-foreground mt-2 flex items-center justify-center gap-1">

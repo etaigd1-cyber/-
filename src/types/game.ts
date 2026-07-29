@@ -3,19 +3,18 @@ export type PartyId = 'blue' | 'red' | 'orange' | 'green' | 'purple' | 'yellow';
 export interface Party {
   id: PartyId;
   name: string;
-  emoji: string;
   power: string;
   powerDescription: string;
   colorClass: string;
 }
 
 export const PARTIES: Party[] = [
-  { id: 'blue', name: 'הישנוניים', emoji: '😴', power: 'חסימה', powerDescription: 'נמנע מתשלום עונש פעם אחת', colorClass: 'party-blue' },
-  { id: 'red', name: 'המיוזעים', emoji: '💦', power: 'גניבה', powerDescription: 'גונב 2 מנדטים מיריב', colorClass: 'party-red' },
-  { id: 'orange', name: 'הזחוחים', emoji: '😏', power: 'הכפלה', powerDescription: 'מכפיל את ההימור בקרב הבא', colorClass: 'party-orange' },
-  { id: 'green', name: 'המצחיקולים', emoji: '📵', power: 'ריפוי', powerDescription: 'מחזיר 3 מנדטים שאבדו', colorClass: 'party-green' },
-  { id: 'purple', name: 'המבוהלים', emoji: '😱', power: 'חיזוי', powerDescription: 'רואה את השאלה לפני כולם (5 שניות)', colorClass: 'party-purple' },
-  { id: 'yellow', name: 'המיוסרים', emoji: '😩', power: 'ברית', powerDescription: 'כופה ברית עם שחקן אחר לתור אחד', colorClass: 'party-yellow' },
+  { id: 'blue', name: 'הישנוניים', power: 'חסימה', powerDescription: 'נמנע מתשלום עונש פעם אחת', colorClass: 'party-blue' },
+  { id: 'red', name: 'המיוזעים', power: 'גניבה', powerDescription: 'גונב 2 מנדטים מיריב', colorClass: 'party-red' },
+  { id: 'orange', name: 'הזחוחים', power: 'הכפלה', powerDescription: 'מכפיל את ההימור בקרב הבא', colorClass: 'party-orange' },
+  { id: 'green', name: 'המצחיקולים', power: 'ריפוי', powerDescription: 'מחזיר 3 מנדטים שאבדו', colorClass: 'party-green' },
+  { id: 'purple', name: 'המבוהלים', power: 'חיזוי', powerDescription: 'רואה את השאלה לפני כולם (5 שניות)', colorClass: 'party-purple' },
+  { id: 'yellow', name: 'המיוסרים', power: 'ברית', powerDescription: 'כופה ברית עם שחקן אחר לתור אחד', colorClass: 'party-yellow' },
 ];
 
 export type DistrictId =

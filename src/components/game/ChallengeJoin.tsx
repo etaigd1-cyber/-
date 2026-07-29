@@ -4,6 +4,7 @@ import { useGameStore } from '@/store/gameStore';
 import { DISTRICTS, PARTIES } from '@/types/game';
 import { Button } from '@/components/ui/button';
 import DistrictIcon from '@/components/game/DistrictIcon';
+import PartyAvatar from '@/components/game/PartyAvatar';
 
 const ChallengeJoin = () => {
   const { players, currentPlayerIndex, battleParticipants, joinBattle, setPhase, selectedDistrict, districtMandates } = useGameStore();
@@ -57,7 +58,7 @@ const ChallengeJoin = () => {
               }`}
             >
               <div className="flex items-center gap-2">
-                <span>{party?.emoji}</span>
+                <PartyAvatar partyId={party?.id} className="h-8 w-8 rounded-full" />
                 <div className="text-right">
                   <p className="font-display font-bold text-foreground text-sm">{player.name}</p>
                   <p className="text-[10px] text-muted-foreground">{player.mandates} מנדטים</p>

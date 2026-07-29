@@ -5,6 +5,7 @@ import { useGameStore } from '@/store/gameStore';
 import { PARTIES, CATEGORIES } from '@/types/game';
 import { Button } from '@/components/ui/button';
 import { useNavigate } from 'react-router-dom';
+import PartyAvatar from '@/components/game/PartyAvatar';
 
 const VICTORY_VIDEO_URL = 'https://drive.google.com/file/d/1OQr-27e3jHzDhWX0C-GQhy1Ji01mO3Y6/preview';
 
@@ -133,7 +134,7 @@ const VictoryScreen = () => {
           transition={{ delay: 0.7 }}
           className="flex items-center justify-center gap-2"
         >
-          <span className="text-3xl">{winnerParty?.emoji}</span>
+          <PartyAvatar partyId={winnerParty?.id} className="h-12 w-12 rounded-full border-2 border-accent" />
           <span className="text-2xl font-display font-black text-foreground">{winner?.name}</span>
         </motion.div>
         <motion.p
@@ -177,7 +178,7 @@ const VictoryScreen = () => {
                 <div className="flex items-center justify-between mb-1">
                   <div className="flex items-center gap-2">
                     <span className="text-sm font-display font-bold text-muted-foreground">#{i + 1}</span>
-                    <span>{party?.emoji}</span>
+                    <PartyAvatar partyId={party?.id} className="h-8 w-8 rounded-full" />
                     <div>
                       <span className="font-display font-bold text-foreground text-sm block">{player.name}</span>
                       <span className="text-[10px] text-muted-foreground">{titleEmoji} {title}</span>

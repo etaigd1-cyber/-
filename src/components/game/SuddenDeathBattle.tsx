@@ -5,6 +5,7 @@ import { useGameStore } from '@/store/gameStore';
 import { Button } from '@/components/ui/button';
 import { DISTRICTS, PARTIES } from '@/types/game';
 import DistrictIcon from '@/components/game/DistrictIcon';
+import PartyAvatar from '@/components/game/PartyAvatar';
 import { playTick, playBuzzer, playCorrect, playWrong } from '@/lib/audioEffects';
 import { cleanAnswerText } from '@/lib/fetchGameData';
 import PenaltyRegionSelect from './PenaltyRegionSelect';
@@ -262,7 +263,7 @@ const SuddenDeathBattle = () => {
                     : 'border-border bg-muted/30 text-muted-foreground'
               }`}
             >
-              {party?.emoji} {p.playerName}
+              <PartyAvatar partyId={party?.id} className="h-4 w-4 rounded-full" /> {p.playerName}
               {p.eliminated && ' ❌'}
               {isActive && !p.eliminated && ' 🎯'}
             </div>

@@ -4,6 +4,7 @@ import { AlertTriangle, Radio, Camera, Check, SkipForward } from 'lucide-react';
 import { useGameStore } from '@/store/gameStore';
 import { PARTIES } from '@/types/game';
 import { Button } from '@/components/ui/button';
+import PartyAvatar from '@/components/game/PartyAvatar';
 
 const GlobalMission = () => {
   const { players, challenges, addMandates, addNewsHeadline, nextTurn } = useGameStore();
@@ -109,7 +110,7 @@ const GlobalMission = () => {
             >
               <div className="flex items-center justify-between mb-2">
                 <div className="flex items-center gap-2">
-                  <span>{party?.emoji}</span>
+                  <PartyAvatar partyId={party?.id} className="h-7 w-7 rounded-full" />
                   <span className="font-display font-bold text-foreground text-sm">{player.name}</span>
                 </div>
                 {done && <Check size={16} className="text-coalition" />}

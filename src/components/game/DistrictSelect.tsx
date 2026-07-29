@@ -3,6 +3,7 @@ import { MapPin, Radio, Lock, Hourglass } from 'lucide-react';
 import { useGameStore } from '@/store/gameStore';
 import { DISTRICTS, PARTIES, type DistrictId } from '@/types/game';
 import DistrictIcon from '@/components/game/DistrictIcon';
+import PartyAvatar from '@/components/game/PartyAvatar';
 
 const DistrictSelect = () => {
   const { selectDistrict, players, currentPlayerIndex, districtMandates, localPlayerId, activePlayerId } = useGameStore();
@@ -37,8 +38,8 @@ const DistrictSelect = () => {
         </motion.div>
         <h2 className="text-xl font-display font-bold text-foreground">ממתין לבחירת מחוז</h2>
         <div className="glass-panel p-4 text-center w-full max-w-sm">
-          <p className="text-sm text-foreground font-display">
-            {party?.emoji} <span className="font-bold">{activePlayer?.name}</span> בוחר/ת מחוז...
+          <p className="text-sm text-foreground font-display flex items-center justify-center gap-1.5">
+            <PartyAvatar partyId={party?.id} className="h-6 w-6 rounded-full" /> <span className="font-bold">{activePlayer?.name}</span> בוחר/ת מחוז...
           </p>
         </div>
         <p className="text-xs text-muted-foreground">המשחק ימשיך אוטומטית</p>
@@ -120,7 +121,7 @@ const DistrictSelect = () => {
                                 color: `hsl(var(--party-${c.partyId}))`,
                               }}
                             >
-                              {party?.emoji} {c.mandates}
+                              <PartyAvatar partyId={party?.id} className="h-3.5 w-3.5 rounded-full" /> {c.mandates}
                             </div>
                           );
                         })}

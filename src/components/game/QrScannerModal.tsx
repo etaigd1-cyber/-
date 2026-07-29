@@ -10,6 +10,7 @@ import PowerActivatedOverlay from '@/components/game/PowerActivatedOverlay';
 import { pushRoomState, pushPlayerState } from '@/lib/roomSync';
 import { fetchCardData, type GameCard } from '@/lib/fetchGameData';
 import { getRandomPolice } from '@/lib/policeBank';
+import PartyAvatar from '@/components/game/PartyAvatar';
 
 /** Known card keys and their visual metadata */
 export type KnownCardKey = 'jail' | 'skip_self' | 'skip_pick' | 'bonus_2' | 'bonus_3' | 'bonus_5' | 'global_mission';
@@ -496,7 +497,7 @@ const QrScannerModal = () => {
                                   : 'border-border bg-muted/30 hover:bg-muted/50'
                               }`}
                             >
-                              <span>{party?.emoji}</span>
+                              <PartyAvatar partyId={party?.id} className="h-7 w-7 rounded-full" />
                               <span className="font-display font-bold text-foreground">{p.name}</span>
                             </button>
                           );

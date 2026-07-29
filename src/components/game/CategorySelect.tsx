@@ -7,6 +7,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import PowerBankDisplay from '@/components/game/PowerBankDisplay';
 import DistrictIcon from '@/components/game/DistrictIcon';
+import PartyAvatar from '@/components/game/PartyAvatar';
 
 const CategorySelect = () => {
   const {
@@ -40,8 +41,8 @@ const CategorySelect = () => {
         </motion.div>
         <h2 className="text-xl font-display font-bold text-foreground">ממתין לבחירת קטגוריה</h2>
         <div className="glass-panel p-4 text-center w-full max-w-sm">
-          <p className="text-sm text-foreground font-display">
-            {party?.emoji} <span className="font-bold">{initiator?.name}</span> בוחר/ת קטגוריה...
+          <p className="text-sm text-foreground font-display flex items-center justify-center gap-1.5">
+            <PartyAvatar partyId={party?.id} className="h-6 w-6 rounded-full" /> <span className="font-bold">{initiator?.name}</span> בוחר/ת קטגוריה...
           </p>
           {battleInviteData && (
             <p className="text-xs text-muted-foreground mt-2 flex items-center justify-center gap-1">
