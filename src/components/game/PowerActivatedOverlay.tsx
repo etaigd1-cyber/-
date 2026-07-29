@@ -1,19 +1,20 @@
+import { useMemo } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Lock, SkipForward, Users, Gift, Zap, AlertTriangle } from 'lucide-react';
+import { getRandomPolice } from '@/lib/policeBank';
 
 type CardType = 'jail' | 'skip_self' | 'skip_pick' | 'bonus_2' | 'bonus_3' | 'bonus_5' | 'global_mission';
 
-const CARD_STYLE: Record<CardType, { bg: string; icon: React.ReactNode; label: string }> = {
-  jail:           { bg: 'from-destructive/80 to-destructive/40', icon: <Lock size={64} />, label: '🔒 נשלחת לחקירה!' },
-  skip_self:      { bg: 'from-muted-foreground/60 to-muted/40', icon: <SkipForward size={64} />, label: '⏭️ דילוג עצמי' },
-  skip_pick:      { bg: 'from-accent/80 to-accent/40', icon: <Users size={64} />, label: '🎯 דילוג על יריב!' },
-  bonus_2:        { bg: 'from-coalition/80 to-coalition/40', icon: <Gift size={64} />, label: '🎁 בונוס +2 מנדטים!' },
-  bonus_3:        { bg: 'from-coalition/80 to-coalition/40', icon: <Gift size={64} />, label: '🎁 בונוס +3 מנדטים!' },
-  bonus_5:        { bg: 'from-accent/80 to-accent/40', icon: <Zap size={64} />, label: '💰 בונוס +5 מנדטים!' },
-  global_mission: { bg: 'from-primary/80 to-primary/40', icon: <AlertTriangle size={64} />, label: '🌍 משימה גלובלית!' },
+const CARD_STYLE: Record<CardType, { bg: string; label: string }> = {
+  jail:           { bg: 'from-destructive/80 to-destructive/40', label: '🔒 נשלחת לחקירה!' },
+  skip_self:      { bg: 'from-muted-foreground/60 to-muted/40', label: '⏭️ דילוג עצמי' },
+  skip_pick:      { bg: 'from-accent/80 to-accent/40', label: '🎯 דילוג על יריב!' },
+  bonus_2:        { bg: 'from-coalition/80 to-coalition/40', label: '🎁 בונוס +2 מנדטים!' },
+  bonus_3:        { bg: 'from-coalition/80 to-coalition/40', label: '🎁 בונוס +3 מנדטים!' },
+  bonus_5:        { bg: 'from-accent/80 to-accent/40', label: '💰 בונוס +5 מנדטים!' },
+  global_mission: { bg: 'from-primary/80 to-primary/40', label: '🌍 משימה גלובלית!' },
 };
 
-const DEFAULT_STYLE = { bg: 'from-primary/80 to-primary/40', icon: <Zap size={64} />, label: '' };
+const DEFAULT_STYLE = { bg: 'from-primary/80 to-primary/40', label: '' };
 
 interface Props {
   cardType: string | null;
@@ -22,6 +23,10 @@ interface Props {
 }
 
 const PowerActivatedOverlay = ({ cardType, cardLabel, onComplete }: Props) => {
+  // One random officer per activation — re-picked only when a new card comes in.
+  // eslint-disable-next-line react-hooks/exhaustive-deps -- cardType is a reseed key, not a data dependency
+  const policePhoto = useMemo(() => getRandomPolice(), [cardType]);
+
   if (!cardType) return null;
   const style = CARD_STYLE[cardType as CardType] ?? { ...DEFAULT_STYLE, label: cardLabel || `⚡ ${cardType}` };
   const displayLabel = cardLabel || style.label;
@@ -42,9 +47,9 @@ const PowerActivatedOverlay = ({ cardType, cardLabel, onComplete }: Props) => {
           initial={{ scale: 0, rotate: -20 }}
           animate={{ scale: 1, rotate: 0 }}
           transition={{ type: 'spring', bounce: 0.5, duration: 0.6 }}
-          className="text-white mb-6"
+          className="mb-6"
         >
-          {style.icon}
+          <img src={policePhoto} alt="שוטר" className="h-40 w-auto object-contain drop-shadow-2xl" />
         </motion.div>
         <motion.h1
           initial={{ y: 30, opacity: 0 }}

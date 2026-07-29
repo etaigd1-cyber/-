@@ -1,6 +1,6 @@
-import { useState, useEffect, useRef, useCallback } from 'react';
+import { useState, useEffect, useRef, useCallback, useMemo } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Camera, X, AlertTriangle, Gift, Lock, SkipForward, Users, Zap, Loader2 } from 'lucide-react';
+import { Camera, X, Loader2 } from 'lucide-react';
 import { Html5Qrcode, Html5QrcodeSupportedFormats } from 'html5-qrcode';
 import { useGameStore } from '@/store/gameStore';
 import { PARTIES } from '@/types/game';
@@ -9,20 +9,21 @@ import { toast } from 'sonner';
 import PowerActivatedOverlay from '@/components/game/PowerActivatedOverlay';
 import { pushRoomState, pushPlayerState } from '@/lib/roomSync';
 import { fetchCardData, type GameCard } from '@/lib/fetchGameData';
+import { getRandomPolice } from '@/lib/policeBank';
 
 /** Known card keys and their visual metadata */
 export type KnownCardKey = 'jail' | 'skip_self' | 'skip_pick' | 'bonus_2' | 'bonus_3' | 'bonus_5' | 'global_mission';
 
 export const KNOWN_CARD_KEYS: KnownCardKey[] = ['jail', 'skip_self', 'skip_pick', 'bonus_2', 'bonus_3', 'bonus_5', 'global_mission'];
 
-export const CARD_VISUALS: Record<KnownCardKey, { title: string; description: string; icon: React.ReactNode; color: string }> = {
-  jail:           { title: '🔒 נשלחת לחקירה!', description: 'הוקפא לך 3 תורות. שב בשקט.', icon: <Lock size={28} />, color: 'border-destructive/40 bg-destructive/10' },
-  skip_self:      { title: '⏭️ דילוג עצמי', description: 'התור שלך דולג אוטומטית.', icon: <SkipForward size={28} />, color: 'border-muted-foreground/30 bg-muted/50' },
-  skip_pick:      { title: '🎯 דלג על יריב', description: 'בחר שחקן אחר לדלג על התור שלו!', icon: <Users size={28} />, color: 'border-accent/40 bg-accent/10' },
-  bonus_2:        { title: '🎁 בונוס +2', description: 'קיבלת 2 מנדטים בונוס!', icon: <Gift size={28} />, color: 'border-coalition/40 bg-coalition/10' },
-  bonus_3:        { title: '🎁 בונוס +3', description: 'קיבלת 3 מנדטים בונוס!', icon: <Gift size={28} />, color: 'border-coalition/40 bg-coalition/10' },
-  bonus_5:        { title: '💰 בונוס +5', description: 'קיבלת 5 מנדטים בונוס! מהלך ענק!', icon: <Zap size={28} />, color: 'border-accent/40 bg-accent/10' },
-  global_mission: { title: '🌍 משימה גלובלית!', description: 'כל השחקנים מקבלים משימה – מי שמסיים ראשון מנצח!', icon: <AlertTriangle size={28} />, color: 'border-primary/40 bg-primary/10' },
+export const CARD_VISUALS: Record<KnownCardKey, { title: string; description: string; color: string }> = {
+  jail:           { title: '🔒 נשלחת לחקירה!', description: 'הוקפא לך 3 תורות. שב בשקט.', color: 'border-destructive/40 bg-destructive/10' },
+  skip_self:      { title: '⏭️ דילוג עצמי', description: 'התור שלך דולג אוטומטית.', color: 'border-muted-foreground/30 bg-muted/50' },
+  skip_pick:      { title: '🎯 דלג על יריב', description: 'בחר שחקן אחר לדלג על התור שלו!', color: 'border-accent/40 bg-accent/10' },
+  bonus_2:        { title: '🎁 בונוס +2', description: 'קיבלת 2 מנדטים בונוס!', color: 'border-coalition/40 bg-coalition/10' },
+  bonus_3:        { title: '🎁 בונוס +3', description: 'קיבלת 3 מנדטים בונוס!', color: 'border-coalition/40 bg-coalition/10' },
+  bonus_5:        { title: '💰 בונוס +5', description: 'קיבלת 5 מנדטים בונוס! מהלך ענק!', color: 'border-accent/40 bg-accent/10' },
+  global_mission: { title: '🌍 משימה גלובלית!', description: 'כל השחקנים מקבלים משימה – מי שמסיים ראשון מנצח!', color: 'border-primary/40 bg-primary/10' },
 };
 
 const CARD_ALIASES: Record<string, string> = {
@@ -79,7 +80,6 @@ function getCardVisuals(cardKey: string, sheetCard?: GameCard) {
   return {
     title: `⚡ ${sheetCard?.action || cardKey}`,
     description: sheetCard?.description || 'פקודת כרטיס',
-    icon: <Zap size={28} />,
     color: 'border-primary/40 bg-primary/10',
   };
 }
@@ -212,6 +212,10 @@ const QrScannerModal = () => {
 
   const { players, currentPlayerIndex, addNewsHeadline } = useGameStore();
   const currentPlayer = players[currentPlayerIndex];
+
+  // One random officer per matched card — re-picked only when a new card is matched.
+  // eslint-disable-next-line react-hooks/exhaustive-deps -- matchedCardKey is a reseed key, not a data dependency
+  const scanPolicePhoto = useMemo(() => getRandomPolice(), [matchedCardKey]);
 
   // Fetch card definitions from Google Sheet on mount
   useEffect(() => {
@@ -464,7 +468,9 @@ const QrScannerModal = () => {
                 <div className="space-y-4">
                   {visuals && (
                     <div className={`rounded-xl border-2 p-5 text-center ${visuals.color}`}>
-                      <div className="text-accent mb-2 flex justify-center">{visuals.icon}</div>
+                      <div className="mb-2 flex justify-center">
+                        <img src={scanPolicePhoto} alt="שוטר" className="h-24 w-auto object-contain" />
+                      </div>
                       <h4 className="text-lg font-display font-black text-foreground">{visuals.title}</h4>
                       <p className="text-sm text-muted-foreground mt-1">{visuals.description}</p>
                       {matchedSheetCard && (
